@@ -1,0 +1,210 @@
+{{define "content"}}
+<div class="container py-8">
+  <!-- Back link -->
+  <a href="/ai-daily/" class="back-link">
+    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18"/></svg>
+    返回首页
+  </a>
+
+  <!-- Header -->
+  <div class="mb-8 animate-in">
+    <div class="glass-card report-header">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:1rem;">
+        <div>
+          <p style="font-size:.875rem;color:#60a5fa;font-weight:500;margin-bottom:.25rem;">{{.Report.Date}}</p>
+          <h1 class="report-title">{{.Report.Title}}</h1>
+        </div>
+        <div class="gradient-text" style="font-size:1.875rem;font-weight:700;">{{.Report.TotalCount}}</div>
+      </div>
+      <!-- 分类筛选栏 -->
+      <div class="category-filter-bar" id="categoryFilterBar">
+        <button class="cat-filter-btn active" data-category="all" onclick="onCategoryFilter('all', this)">
+          全部
+        </button>
+        {{range .Report.CategoryGroups}}
+        <button class="cat-filter-btn {{catColorClass .Category}}" data-category="{{.Category}}" onclick="onCategoryFilter('{{.Category}}', this)">
+          {{.Emoji}} {{.Category}}
+        </button>
+        {{end}}
+      </div>
+      <!-- 标签筛选栏 -->
+      {{if .Report.TagStats}}
+      <div class="tag-filter-bar" id="tagFilterBar">
+        <span class="tag-filter-label">🏷️</span>
+        <div class="tag-filter-list">
+          <button class="tag-filter-btn active" data-tag="all" onclick="onTagFilter('all', this)">全部</button>
+          {{range .Report.TagStats}}<span class="tag-filter-sep">｜</span><button class="tag-filter-btn" data-tag="{{.Tag}}" onclick="onTagFilter('{{.Tag}}', this)">{{.Tag}}</button>{{end}}
+        </div>
+      </div>
+      {{end}}
+      <p class="report-summary">{{.Report.Summary}}</p>
+    </div>
+  </div>
+
+  <!-- Filter result hint -->
+  <div id="filterHint" class="filter-hint" style="display:none;">
+    <span id="filterHintText"></span>
+    <button onclick="resetAllFilters()" class="filter-hint-reset">清除筛选</button>
+  </div>
+
+  <!-- Articles by Category -->
+  <div class="space-y-8" id="categoryContent">
+    {{range .Report.CategoryGroups}}
+    <div class="animate-in category-section" data-category="{{.Category}}">
+      <div class="category-header">
+        <span class="emoji">{{.Emoji}}</span>
+        <h2>{{.Category}}</h2>
+        <span class="cat-badge {{catColorClass .Category}}">{{len .Articles}} 条</span>
+        <div class="divider"></div>
+      </div>
+      <div class="grid-gap-4">
+        {{range .Articles}}
+        {{template "article_card_lg" .}}
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  <!-- Dual-dimension Filter Script -->
+  <script>
+  (function() {
+    var selectedCategory = 'all';
+    var selectedTag = 'all';
+
+    window.onCategoryFilter = function(category, btn) {
+      selectedCategory = category;
+      var buttons = document.querySelectorAll('#categoryFilterBar .cat-filter-btn');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+      }
+      btn.classList.add('active');
+      applyFilters();
+    };
+
+    window.onTagFilter = function(tag, btn) {
+      selectedTag = tag;
+      var buttons = document.querySelectorAll('#tagFilterBar .tag-filter-btn');
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.remove('active');
+      }
+      btn.classList.add('active');
+      applyFilters();
+    };
+
+    window.resetAllFilters = function() {
+      selectedCategory = 'all';
+      selectedTag = 'all';
+      // 重置分类按钮
+      var catBtns = document.querySelectorAll('#categoryFilterBar .cat-filter-btn');
+      for (var i = 0; i < catBtns.length; i++) {
+        catBtns[i].classList.remove('active');
+      }
+      if (catBtns.length > 0) catBtns[0].classList.add('active');
+      // 重置标签按钮
+      var tagBtns = document.querySelectorAll('#tagFilterBar .tag-filter-btn');
+      for (var i = 0; i < tagBtns.length; i++) {
+        tagBtns[i].classList.remove('active');
+      }
+      if (tagBtns.length > 0) tagBtns[0].classList.add('active');
+      applyFilters();
+    };
+
+    function applyFilters() {
+      var sections = document.querySelectorAll('.category-section');
+      var totalVisible = 0;
+
+      for (var s = 0; s < sections.length; s++) {
+        var section = sections[s];
+        var sectionCat = section.getAttribute('data-category');
+        var catMatch = (selectedCategory === 'all' || sectionCat === selectedCategory);
+
+        if (!catMatch) {
+          section.style.display = 'none';
+          continue;
+        }
+
+        // 如果没有标签筛选，整个 section 显示
+        if (selectedTag === 'all') {
+          section.style.display = '';
+          var cards = section.querySelectorAll('.article-card');
+          for (var c = 0; c < cards.length; c++) {
+            cards[c].style.display = '';
+          }
+          totalVisible += cards.length;
+          continue;
+        }
+
+        // 有标签筛选，逐卡片检查
+        section.style.display = '';
+        var cards = section.querySelectorAll('.article-card');
+        var visibleInSection = 0;
+        for (var c = 0; c < cards.length; c++) {
+          var cardTags = (cards[c].getAttribute('data-tags') || '').replace(/，/g, ',');
+          var tagList = cardTags.split(',');
+          var tagMatch = false;
+          for (var t = 0; t < tagList.length; t++) {
+            if (tagList[t].replace(/^\s+|\s+$/g, '') === selectedTag) {
+              tagMatch = true;
+              break;
+            }
+          }
+          if (tagMatch) {
+            cards[c].style.display = '';
+            visibleInSection++;
+          } else {
+            cards[c].style.display = 'none';
+          }
+        }
+
+        // 如果该分类下没有匹配标签的文章，隐藏整个 section
+        if (visibleInSection === 0) {
+          section.style.display = 'none';
+        }
+        totalVisible += visibleInSection;
+      }
+
+      // 更新筛选提示
+      var hint = document.getElementById('filterHint');
+      var hintText = document.getElementById('filterHintText');
+      if (selectedCategory === 'all' && selectedTag === 'all') {
+        hint.style.display = 'none';
+      } else {
+        var parts = [];
+        if (selectedCategory !== 'all') parts.push('分类「' + selectedCategory + '」');
+        if (selectedTag !== 'all') parts.push('标签「' + selectedTag + '」');
+        hintText.textContent = '筛选 ' + parts.join(' + ') + '，共 ' + totalVisible + ' 条';
+        hint.style.display = '';
+      }
+    }
+  })();
+  </script>
+</div>
+{{end}}
+
+{{define "article_card_lg"}}
+<a href="{{.URL}}" target="_blank" rel="noopener noreferrer" class="glass-card article-card article-card-lg" data-tags="{{.Tags}}">
+  <div class="thumb">
+    {{if .ImageURL}}
+    <img src="{{.ImageURL}}" alt="{{displayTitle .}}" loading="lazy" referrerpolicy="no-referrer">
+    <div class="fallback" style="display:none;">
+      <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="rgba(59,130,246,.3)" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+    </div>
+    {{else}}
+    <svg width="40" height="40" fill="none" viewBox="0 0 24 24" stroke="rgba(59,130,246,.3)" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.41a2.25 2.25 0 013.182 0l2.909 2.91m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+    {{end}}
+  </div>
+  <div class="article-content">
+    <div style="margin-bottom:.5rem;">
+      <h3 class="article-title">{{displayTitle .}}</h3>
+      {{if englishTitle .}}<p class="article-en-title">{{englishTitle .}}</p>{{end}}
+    </div>
+    <p class="article-summary">{{.Summary}}</p>
+    <div class="article-meta">
+      <span class="meta-source"><span class="meta-dot"></span> {{.Source}}</span>
+      {{if .Category}}<span class="cat-badge {{catColorClass .Category}}">{{catEmoji .Category}} {{.Category}}</span>{{end}}
+      {{range splitTags .Tags 3}}<span class="meta-tag">{{.}}</span>{{end}}
+    </div>
+  </div>
+</a>
+{{end}}

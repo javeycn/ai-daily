@@ -1,0 +1,42 @@
+# Dependencies
+node_modules/
+vendor/
+
+# Build output
+backend/bin/
+frontend/.next/
+frontend/out/
+
+# Data
+backend/data/
+frontend/data/daily/*.json
+frontend/data/index.json
+!frontend/data/.gitkeep
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Office
+*.ppt
+*.pptx
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage.out
+coverage.html

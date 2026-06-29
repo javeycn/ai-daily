@@ -1,0 +1,66 @@
+# AI Daily 容器化部署 — tc197 (javey.pro)
+# 目录结构（宿主机）：/data/aidaily/
+#   ├── docker-compose.yml
+#   ├── crawler/           # 爬虫容器相关
+#   │   └── Dockerfile
+#   ├── builder/           # 前端构建容器相关
+#   │   └── Dockerfile
+#   ├── bin/               # Go 爬虫二进制
+#   │   └── ai-news-crawler
+#   ├── configs/           # 生产配置
+#   │   └── config-prod.yaml
+#   ├── data/              # SQLite 数据库（持久化）
+#   │   └── ai_news.db
+#   ├── frontend/          # 前端源码（node_modules 在容器内 volume）
+#   ├── www/               # 静态产物输出
+#   │   └── ai-daily/
+#   ├── logs/              # 日志输出
+#   └── .env               # 环境变量（API Keys）
+
+services:
+  # ===== 爬虫容器 =====
+  # 负责：新闻采集 + LLM 摘要 + 三级聚合 + 导出 JSON
+  # 运行方式：cron 触发 docker compose run，任务完成后退出
+  aidaily-crawler:
+    build:
+      context: ./crawler
+      dockerfile: Dockerfile
+    container_name: aidaily-crawler
+    volumes:
+      - ./bin/ai-news-crawler:/app/ai-news-crawler:ro
+      - ./configs/config-prod.yaml:/app/config-prod.yaml:ro
+      - ./data:/app/data                    # SQLite DB 持久化
+      - ./www/ai-daily/data:/app/output     # JSON 输出到静态目录
+      - ./logs:/app/logs
+    env_file:
+      - .env
+    working_dir: /app
+    networks:
+      - aidaily-net
+    restart: "no"
+
+  # ===== 前端构建容器 =====
+  # 负责：Next.js SSG 构建 + 部署静态产物
+  # 运行方式：爬虫完成后触发 docker compose run
+  aidaily-builder:
+    build:
+      context: ./builder
+      dockerfile: Dockerfile
+    container_name: aidaily-builder
+    volumes:
+      - ./frontend:/app/frontend            # 前端源码
+      - ./www/ai-daily:/app/site            # 构建输出目标
+      - node_modules:/app/frontend/node_modules  # node_modules 持久化
+      - ./logs:/app/logs
+    working_dir: /app
+    networks:
+      - aidaily-net
+    restart: "no"
+
+volumes:
+  node_modules:
+    name: aidaily-node-modules
+
+networks:
+  aidaily-net:
+    name: aidaily-net

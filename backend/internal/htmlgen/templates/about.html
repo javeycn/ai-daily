@@ -1,0 +1,55 @@
+{{define "content"}}
+<div class="container" style="max-width:56rem;padding-top:4rem;padding-bottom:4rem;">
+  <div class="animate-in">
+    <h1 class="gradient-text" style="font-size:1.875rem;font-weight:700;margin-bottom:2rem;">关于 AI Daily</h1>
+    <div class="glass-card" style="padding:2rem;">
+      <div class="space-y-6">
+        <section class="about-section">
+          <h2>项目介绍</h2>
+          <p>AI Daily 是一个自动化的 AI 资讯聚合平台。系统每天从全球多个权威 AI 新闻源自动采集最新资讯，通过大语言模型（LLM）智能生成中文摘要和分类标签，汇聚成每日精选 AI 日报。</p>
+        </section>
+
+        <section class="about-section">
+          <h2>数据来源</h2>
+          <ul class="space-y-2" style="margin-top:.5rem;">
+            <li><span class="dot"></span> The Verge / VentureBeat / TechCrunch — 国际科技媒体</li>
+            <li><span class="dot"></span> OpenAI / DeepMind / Google Research / Anthropic — AI 大厂官方博客</li>
+            <li><span class="dot"></span> Unite.AI / THE DECODER / MarkTechPost / InfoQ AI — AI 专业媒体</li>
+            <li><span class="dot"></span> Import AI / Simon Willison / Chip Huyen / Eugene Yan / Karpathy — 前沿思想领袖</li>
+            <li><span class="dot"></span> Latent Space / The Gradient / The Batch / BAIR Blog — AI 深度分析</li>
+            <li><span class="dot"></span> 36氪 / 机器之心 / IT之家 / 智东西 — 国内科技媒体</li>
+          </ul>
+        </section>
+
+        <section class="about-section">
+          <h2>技术栈</h2>
+          <div class="tech-grid" style="margin-top:.75rem;">
+            <div class="tech-item"><span class="tech-label">后端采集</span><span class="tech-value">Go + RSS/Atom 解析</span></div>
+            <div class="tech-item"><span class="tech-label">数据存储</span><span class="tech-value">SQLite (WAL 模式)</span></div>
+            <div class="tech-item"><span class="tech-label">AI 摘要</span><span class="tech-value">OpenAI GPT / Claude API</span></div>
+            <div class="tech-item"><span class="tech-label">前端渲染</span><span class="tech-value">Go html/template 静态生成</span></div>
+            <div class="tech-item"><span class="tech-label">搜索</span><span class="tech-value">Fuse.js 客户端搜索</span></div>
+            <div class="tech-item"><span class="tech-label">部署</span><span class="tech-value">静态站点 + Nginx</span></div>
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h2>自动化流程</h2>
+          <div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-top:.75rem;font-size:.875rem;color:var(--text-secondary);">
+            <span class="flow-step">新闻采集</span><span class="flow-arrow">→</span>
+            <span class="flow-step">去重过滤</span><span class="flow-arrow">→</span>
+            <span class="flow-step">LLM 摘要</span><span class="flow-arrow">→</span>
+            <span class="flow-step">分类标签</span><span class="flow-arrow">→</span>
+            <span class="flow-step">日报聚合</span><span class="flow-arrow">→</span>
+            <span class="flow-step">静态发布</span>
+          </div>
+        </section>
+
+        <section class="about-section" style="padding-top:1rem;border-top:1px solid var(--border-color);">
+          <p style="font-size:.875rem;">本站内容为 AI 自动生成摘要，版权归原作者所有。如有任何问题，请通过 javey#qq.com 反馈。</p>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
+{{end}}

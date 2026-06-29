@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{.Title}} - AI Daily</title>
+<meta name="description" content="{{.Description}}">
+<link rel="stylesheet" href="/ai-daily/static/style.css">
+<script src="/ai-daily/static/theme.js"></script>
+</head>
+<body>
+<!-- Header -->
+<header class="site-header">
+  <div class="container inner">
+    <a href="/ai-daily/" class="logo">
+      <div class="logo-icon">
+        <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <div class="logo-text">
+        <h1 class="gradient-text">AI Daily</h1>
+        <p>每日 AI 资讯</p>
+      </div>
+    </a>
+    <nav class="site-nav">
+      <a href="/ai-daily/archive/" class="nav-link">历史归档</a>
+      <a href="/ai-daily/search/" class="nav-link">搜索</a>
+      <button class="theme-btn" onclick="toggleTheme()" aria-label="切换主题">
+        <svg class="icon-sun" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z"/></svg>
+        <svg class="icon-moon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z"/></svg>
+      </button>
+    </nav>
+  </div>
+</header>
+
+<!-- Main Content -->
+<main>
+{{block "content" .}}{{end}}
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div class="container inner">
+    <div class="footer-left">
+      <div class="logo-icon" style="width:1.5rem;height:1.5rem;border-radius:.5rem;">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+      </div>
+      <span>&copy; {{.Year}} AI Daily. Powered by AI&amp;LLM, JAVEY.org.</span>
+    </div>
+    <div class="footer-right">
+      <a href="/ai-daily/about/">关于</a>
+      <span class="footer-sep">|</span>
+      <span style="display:flex;align-items:center;gap:.25rem;">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z"/></svg>
+        RSS
+      </span>
+    </div>
+  </div>
+</footer>
+
+<!-- Analytics: 延迟加载，等页面完全渲染后再请求统计脚本 -->
+<div id="rep" style="display:none">
+<script>
+var _mtj = _mtj || [];
+function _loadAnalytics() {
+  var mtj = document.createElement("script");
+  mtj.src = "https://node96.aizhantj.com:21233/tjjs/?k=ivy4ni6ilhl";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(mtj, s);
+}
+if (window.requestIdleCallback) {
+  window.addEventListener('load', function() {
+    requestIdleCallback(_loadAnalytics, { timeout: 3000 });
+  });
+} else {
+  window.addEventListener('load', function() {
+    setTimeout(_loadAnalytics, 3000);
+  });
+}
+</script>
+</div>
+</body>
+</html>

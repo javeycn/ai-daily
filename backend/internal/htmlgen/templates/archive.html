@@ -1,0 +1,47 @@
+{{define "content"}}
+<div class="container py-8">
+  <div class="mb-8 animate-in">
+    <h1 style="font-size:1.875rem;font-weight:700;color:var(--text-primary);margin-bottom:.5rem;">历史归档</h1>
+    <p style="color:var(--text-secondary);" id="archiveSubtitle">共 {{.TotalDays}} 期日报</p>
+  </div>
+
+  {{if eq .TotalDays 0}}
+  <div class="empty-state animate-in">
+    <h2 class="gradient-text">暂无归档</h2>
+    <p>日报归档将在首次采集完成后出现。</p>
+  </div>
+  {{else}}
+
+  <div class="space-y-10" id="archiveContent">
+    {{range .Months}}
+    <div class="animate-in archive-month-section">
+      <h2 class="month-heading"><span class="month-dot"></span> {{.Label}}</h2>
+      <div class="archive-grid">
+        {{range .Days}}
+        <a href="/ai-daily/daily/{{.Date}}/" class="glass-card archive-card" data-tags="{{range .Tags}}{{.}},{{end}}">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem;">
+            <span class="archive-date">{{.Date}}</span>
+            <span class="archive-count">{{.TotalCount}} 条</span>
+          </div>
+          <p class="archive-summary">{{.Summary}}</p>
+          {{if .Tags}}
+          <div class="archive-tags">
+            {{range slice3 .Tags}}
+            {{if isCategoryTag .}}
+            <span class="cat-badge {{catColorClass .}}">{{catEmoji .}} {{.}}</span>
+            {{else}}
+            <span>{{.}}</span>
+            {{end}}
+            {{end}}
+          </div>
+          {{end}}
+        </a>
+        {{end}}
+      </div>
+    </div>
+    {{end}}
+  </div>
+
+  {{end}}
+</div>
+{{end}}

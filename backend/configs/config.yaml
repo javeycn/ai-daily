@@ -1,0 +1,73 @@
+# AI News Crawler 配置文件
+
+# 采集配置
+crawler:
+  # 每个采集器之间的请求间隔（秒）
+  delay: 2
+  # 采集超时时间（秒）
+  timeout: 30
+  # 重试次数
+  max_retries: 3
+  # 每次采集的最大文章数
+  max_articles_per_source: 50
+
+# 数据库配置
+database:
+  # SQLite 数据库文件路径
+  path: "./data/ai_news.db"
+
+# LLM 配置
+llm:
+  # 提供商: openai / claude
+  provider: "claude"
+  # API 基础 URL（支持自定义代理端点，留空则使用官方端点）
+  base_url: "https://api.lkeap.cloud.tencent.com/plan/anthropic"
+  # API Key
+  api_key: ""  # 通过环境变量 OPENAI_API_KEY 或 CLAUDE_API_KEY 注入
+  # 模型名称
+  model: "glm-5.1"
+  # 并发控制
+  max_concurrent: 5
+  # 请求超时（秒）
+  timeout: 180
+  # 每篇文章的最大摘要 token 数
+  max_summary_tokens: 4096
+
+# 输出配置
+output:
+  # JSON 输出目录
+  dir: "../frontend/data"
+  # 每日 JSON 文件名格式
+  daily_format: "2006-01-02"
+
+# 聚合配置
+aggregator:
+  # 每日最大文章数
+  max_daily_articles: 30
+  # 每日最小文章数
+  min_daily_articles: 20
+
+# Web 搜索 API 配置（Serper.dev Google Search API，补充 RSS 覆盖不到的突发新闻）
+web_search:
+  # 是否启用搜索补充采集
+  enabled: false
+  # Serper API Key（推荐使用环境变量 WEBSEARCH_API_KEY）
+  api_key: ""
+  # 每个查询返回的最大结果数
+  max_results: 10
+  # 搜索请求超时（秒）
+  timeout: 15
+  # 自定义搜索查询（留空则使用默认查询模板）
+  queries: []
+  # 排除的域名（避免与 RSS 源重复采集）
+  exclude_domains:
+    - "reddit.com"
+    - "twitter.com"
+    - "youtube.com"
+
+# 日志配置
+log:
+  # 日志级别: debug / info / warn / error
+  level: "info"
+  # 日志文件路径（留空则输出到 stdout）
+  file: ""

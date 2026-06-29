@@ -1,0 +1,21 @@
+# AI Daily 多频次 Cron 调度配置
+# 
+# 安装方式：
+#   crontab -e
+#   粘贴以下内容（根据实际路径修改 INSTALL_DIR）
+#
+# 调度策略：
+#   08:00 - 全量采集：采集最近3天数据 + LLM 摘要 + 全站 HTML 重建
+#   14:00 - 增量采集：采集最近6小时数据 + 局部 HTML 更新
+#   20:00 - 增量采集：采集最近6小时数据 + 局部 HTML 更新
+
+INSTALL_DIR=/data/system/aidaily
+
+# 全量采集（每天 8:00）
+0 8 * * * ${INSTALL_DIR}/deploy/crawl.sh
+
+# 增量采集（每天 14:00）
+0 14 * * * ${INSTALL_DIR}/deploy/crawl-incremental.sh
+
+# 增量采集（每天 20:00）
+0 20 * * * ${INSTALL_DIR}/deploy/crawl-incremental.sh

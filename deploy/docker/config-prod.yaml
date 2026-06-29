@@ -1,0 +1,51 @@
+# AI News Crawler 生产环境配置 — tc197 容器化版本
+# 路径已调整为容器内视角
+
+# 采集配置
+crawler:
+  delay: 2
+  timeout: 30
+  max_retries: 3
+  max_articles_per_source: 50
+
+# 数据库配置（容器内路径，对应宿主机 /data/aidaily/data/）
+database:
+  path: "/app/data/ai_news.db"
+
+# LLM 配置
+llm:
+  provider: "claude"
+  base_url: "https://api.lkeap.cloud.tencent.com/coding/anthropic"
+  api_key: ""  # 通过环境变量 CLAUDE_API_KEY 注入
+  model: "glm-5.1"
+  max_concurrent: 5
+  timeout: 180
+  max_summary_tokens: 4096
+
+# 输出配置（容器内路径，对应宿主机 /data/aidaily/www/ai-daily/data/）
+output:
+  dir: "/app/output"
+  daily_format: "2006-01-02"
+  html_dir: ""
+
+# 聚合配置
+aggregator:
+  max_daily_articles: 30
+  min_daily_articles: 20
+
+# Web 搜索 API 配置
+web_search:
+  enabled: true
+  api_key: ""
+  max_results: 10
+  timeout: 15
+  queries: []
+  exclude_domains:
+    - "reddit.com"
+    - "twitter.com"
+    - "youtube.com"
+
+# 日志配置（容器内路径，对应宿主机 /data/aidaily/logs/）
+log:
+  level: "info"
+  file: "/app/logs/crawler.log"

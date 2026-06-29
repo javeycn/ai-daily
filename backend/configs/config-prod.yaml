@@ -1,0 +1,51 @@
+# AI News Crawler 生产环境配置
+
+# 采集配置
+crawler:
+  delay: 2
+  timeout: 30
+  max_retries: 3
+  max_articles_per_source: 50
+
+# 数据库配置
+database:
+  path: "/data/system/aidaily/data/ai_news.db"
+
+# LLM 配置
+llm:
+  provider: "claude"
+  base_url: "https://api.lkeap.cloud.tencent.com/coding/anthropic"
+  api_key: ""  # 通过环境变量 CLAUDE_API_KEY 注入
+  model: "glm-5"
+  max_concurrent: 5
+  timeout: 180
+  max_summary_tokens: 4096
+
+# 输出配置 —— 直接输出到 Nginx 静态文件目录
+output:
+  dir: "/data/system/aidaily/www/data"
+  daily_format: "2006-01-02"
+  html_dir: "/data/web/www/ai-daily"
+
+# 聚合配置
+aggregator:
+  max_daily_articles: 30
+  min_daily_articles: 20
+
+# Web 搜索 API 配置（Serper.dev Google Search API，补充 RSS 覆盖不到的突发新闻）
+web_search:
+  enabled: true
+  # API Key 通过环境变量 WEBSEARCH_API_KEY 注入，不硬编码到配置文件
+  api_key: ""
+  max_results: 10
+  timeout: 15
+  queries: []
+  exclude_domains:
+    - "reddit.com"
+    - "twitter.com"
+    - "youtube.com"
+
+# 日志配置
+log:
+  level: "info"
+  file: "/data/system/aidaily/logs/crawler.log"

@@ -1,0 +1,159 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Inter 可变字体 — 仅 latin 子集，通过 jsDelivr CDN 加载（国内有节点） */
+@font-face {
+  font-family: 'Inter Variable';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url(https://cdn.jsdelivr.net/fontsource/fonts/inter:vf@latest/latin-wght-normal.woff2) format('woff2-variations');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@layer base {
+  :root {
+    --bg-primary: #0F172A;
+    --bg-secondary: #1E293B;
+    --bg-card: #1E293B;
+    --text-primary: #F1F5F9;
+    --text-secondary: #94A3B8;
+    --border-color: #334155;
+    --accent-blue: #3B82F6;
+    --accent-blue-glow: rgba(59, 130, 246, 0.3);
+  }
+
+  .light {
+    --bg-primary: #F8FAFC;
+    --bg-secondary: #FFFFFF;
+    --bg-card: #FFFFFF;
+    --text-primary: #1E293B;
+    --text-secondary: #64748B;
+    --border-color: #E2E8F0;
+    --accent-blue: #2563EB;
+    --accent-blue-glow: rgba(37, 99, 235, 0.2);
+  }
+}
+
+@layer base {
+  body {
+    @apply bg-dark-900 text-dark-100 antialiased transition-colors duration-300;
+    font-family: 'Inter Variable', 'Noto Sans SC Variable', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  }
+
+  .light body {
+    @apply bg-[var(--bg-primary)] text-dark-800;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply rounded-2xl border border-[var(--border-color)] bg-[var(--bg-card)] backdrop-blur-sm;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+  }
+
+  .glass-card:hover {
+    border-color: var(--accent-blue);
+    box-shadow: 0 4px 30px var(--accent-blue-glow);
+  }
+
+  .glow-text {
+    text-shadow: 0 0 20px var(--accent-blue-glow);
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-blue-400 via-blue-500 to-purple-500 bg-clip-text text-transparent;
+  }
+
+  .tag-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1.5 text-xs font-medium
+           bg-blue-500/10 text-blue-400 border border-blue-500/20
+           transition-all duration-200;
+    /* 确保移动端触摸目标至少 36px 高 */
+    min-height: 36px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .tag-badge:hover {
+    @apply bg-blue-500/20 border-blue-500/40;
+  }
+
+  .tag-badge-active {
+    @apply bg-blue-500/30 text-blue-300 border-blue-400/50;
+  }
+}
+
+@layer components {
+  /* 滚动触发的淡入动画 — 替代固定 animationDelay 的方案 */
+  .scroll-fade-in {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.4s ease-out, transform 0.4s ease-out;
+  }
+
+  .scroll-fade-in.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 展开更多按钮 */
+  .expand-btn {
+    @apply relative w-full flex items-center justify-center gap-2
+           py-3 rounded-xl text-sm font-medium
+           text-[var(--text-secondary)] cursor-pointer
+           transition-all duration-200;
+    min-height: 44px; /* Apple HIG 触摸目标 */
+    background: linear-gradient(to bottom,
+      transparent 0%,
+      var(--bg-card) 40%
+    );
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .expand-btn:hover {
+    @apply text-blue-400;
+  }
+
+  /* 折叠时卡片列表底部的渐变遮罩 */
+  .collapse-fade-mask {
+    position: relative;
+  }
+
+  .collapse-fade-mask::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--bg-primary));
+    pointer-events: none;
+    border-radius: 0 0 1rem 1rem;
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: #334155 transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: #334155;
+    border-radius: 3px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+    background: #475569;
+  }
+}

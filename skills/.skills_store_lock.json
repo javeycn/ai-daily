@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "skills": {
+    "daily-ai-news-skill": {
+      "name": "Daily Ai News",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=daily-ai-news-skill",
+      "source": "skillhub",
+      "version": "0.1.0"
+    },
+    "ai-news-zh": {
+      "name": "AI News ZH - 中文AI科技日报",
+      "zip_url": "https://lightmake.site/api/v1/download?slug=ai-news-zh",
+      "source": "skillhub",
+      "version": "1.0.0"
+    }
+  }
+}
